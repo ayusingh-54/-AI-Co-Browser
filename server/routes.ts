@@ -10,8 +10,7 @@ import { openai } from "./replit_integrations/image/client"; // reusing client s
 import OpenAI from "openai";
 
 const openaiClient = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function registerRoutes(
