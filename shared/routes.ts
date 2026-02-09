@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { insertProjectSchema, insertSkillSchema, insertExperienceSchema, projects, skills, experience } from './schema';
+import type { Project, Skill, Experience, ChatRequest, ChatResponse } from './schema';
+
+export type { ChatRequest, ChatResponse };
 
 export const errorSchemas = {
   validation: z.object({
@@ -21,9 +23,9 @@ export const api = {
       path: '/api/portfolio' as const,
       responses: {
         200: z.object({
-          projects: z.array(z.custom<typeof projects.$inferSelect>()),
-          skills: z.array(z.custom<typeof skills.$inferSelect>()),
-          experience: z.array(z.custom<typeof experience.$inferSelect>()),
+          projects: z.array(z.any()),
+          skills: z.array(z.any()),
+          experience: z.array(z.any()),
         }),
       },
     },

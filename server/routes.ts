@@ -3,10 +3,6 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import { openai } from "./replit_integrations/image/client"; // reusing client setup from image module for convenience, or I can import OpenAI directly. 
-// Actually, I'll use the OpenAI client from the blueprint's client file to ensure env vars are picked up correctly.
-// The blueprint put client.ts in server/replit_integrations/image/client.ts AND server/replit_integrations/audio/client.ts. 
-// I'll import from one of them.
 import OpenAI from "openai";
 
 const openaiClient = new OpenAI({
@@ -129,7 +125,7 @@ export async function registerRoutes(
       ];
 
       const completion = await openaiClient.chat.completions.create({
-        model: "gpt-5.1",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           ...history.map(msg => ({ role: msg.role as "user" | "assistant", content: msg.content }))
