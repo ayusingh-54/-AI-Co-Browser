@@ -129,7 +129,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const choice = completion.choices[0];
-    const toolCall = choice.message.tool_calls?.[0];
+    const toolCalls = choice.message.tool_calls;
+    const toolCall = toolCalls?.[0] as any;
     const content = choice.message.content;
 
     // Save assistant response
