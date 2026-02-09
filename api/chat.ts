@@ -1,7 +1,21 @@
 // Vercel Serverless Function: POST /api/chat
+// Fully self-contained — no cross-file imports (Vercel bundles each function independently)
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
-import { getMessages, createMessage } from "./_storage";
+
+// In-memory message store (resets per cold start — fine for demo)
+interface Message { id: number; role: string; content: string; sessionId: string; }
+const messagesStore: Message[] = [];
+let nextId = 1;
+
+function getMessages(sessionId: string) {
+  return messagesStore.filter(m => m.sessionId === sessionId).slice(-20);
+}
+function createMessage(role: string, content: string, sessionId: string): Message {
+  const msg: Message = { id: nextId++, role, content, sessionId };
+  messagesStore.push(msg);
+  return msg;
+}
 
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
