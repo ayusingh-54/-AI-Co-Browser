@@ -1,0 +1,179 @@
+Build a fully working AI-powered co-browsing chatbot for a portfolio website using React + JavaScript + Tailwind CSS and OpenAI API, deployed on Vercel, with tool-based co-browsing actions (scroll, navigate, highlight, click, input).
+
+The chatbot must dynamically understand website content (NO hard-coded portfolio data) and act as a co-browsing assistant.
+
+🧱 Tech Stack (STRICT)
+
+Frontend: React (JavaScript only)
+
+Styling: Tailwind CSS
+
+AI: OpenAI API
+
+Deployment: Vercel
+
+No backend framework required (use API routes or serverless functions if needed)
+
+📁 Project Structure
+/src
+ ├── components
+ │    ├── Chatbot.jsx
+ │    ├── ChatMessage.jsx
+ │    ├── Portfolio.jsx
+ │    ├── ToolExecutor.js
+ │    └── HighlightOverlay.jsx
+ ├── hooks
+ │    └── useDOMExtractor.js
+ ├── utils
+ │    ├── extractVisibleText.js
+ │    ├── toolDefinitions.js
+ │    └── openaiClient.js
+ ├── pages
+ │    └── Home.jsx
+ ├── App.jsx
+ └── main.jsx
+
+🌐 Portfolio Website Requirements
+
+Build a sample portfolio website with sections:
+
+Hero / About
+
+Skills
+
+Projects (at least 3 projects)
+
+Experience
+
+Contact form
+
+Each section must have:
+
+Unique IDs
+
+Semantic HTML
+
+NO project data hard-coded into the chatbot
+
+Chatbot must extract content directly from the DOM
+
+🤖 Chatbot Core Features
+1️⃣ Conversational AI
+
+Use OpenAI API
+
+Maintain conversation history
+
+Ask clarifying questions if intent is unclear
+
+Respond in natural human language
+
+2️⃣ Dynamic Website Understanding
+
+Implement a DOM extractor that:
+
+Reads visible text only
+
+Groups content by section
+
+Sends extracted content to the LLM when answering questions
+
+Example:
+User:
+
+“What projects are showcased here?”
+
+AI flow:
+
+Extract DOM text from #projects
+
+Summarize titles + descriptions
+
+Respond conversationally
+
+3️⃣ Tool-Based Co-Browsing (CORE FEATURE)
+
+❗ The AI must NOT manipulate the DOM directly
+
+Instead:
+
+AI decides the action
+
+AI calls a tool
+
+Tool executes the DOM operation
+
+🔧 Required Tools (Implement as Functions)
+
+Define tools like this:
+
+{
+  name: "scroll",
+  description: "Scrolls the page",
+  parameters: { direction: "up | down" }
+}
+
+Tools to implement:
+
+scroll(direction)
+
+navigateTo(sectionId)
+
+highlightElement(selector)
+
+clickElement(selector)
+
+inputText(selector, text)
+
+focusSection(sectionId)
+
+🧠 Tool Calling Flow
+
+User message
+
+Send message + DOM context to OpenAI
+
+Model decides:
+
+Response text
+
+Tool call (if needed)
+
+Tool executes action
+
+UI reflects action visually
+
+🖌️ Visual Feedback
+
+Highlight elements with animated borders
+
+Smooth scrolling
+
+Clear visual focus when navigating sections
+
+💬 Chat UI
+
+Floating chat widget (bottom-right)
+
+Messages:
+
+User bubble
+
+AI bubble
+
+Show:
+
+AI text
+
+Triggered action clearly
+
+🚀 Deployment
+
+Deploy frontend on Vercel
+
+Use environment variables:
+
+VITE_OPENAI_API_KEY=your_key_here
+
+
+App must work end-to-end after deployment

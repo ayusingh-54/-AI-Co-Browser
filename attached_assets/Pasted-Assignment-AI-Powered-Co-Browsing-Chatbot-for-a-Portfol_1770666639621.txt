@@ -1,0 +1,77 @@
+Assignment: AI-Powered Co-Browsing
+Chatbot for a Portfolio Website
+
+Objective
+Build a conversational AI chatbot that can act as a co-browsing assistant for a portfolio
+website.
+The chatbot should dynamically understand the website’s content and help users explore it by
+answering questions and performing actions like navigation, scrolling, clicking, highlighting
+elements, and filling inputs — all without hard-coded content.
+The project must be built using React , leverage the openai API, and be fully 
+deployed with a live demo.
+
+Key Requirements
+1. Website & Content Handling
+● You may use any portfolio website (personal portfolio, sample portfolio, or your own).
+● The chatbot must dynamically extract content from the website:
+
+Example user query:
+● “What projects are showcased here?”
+Agent Reasoning:
+● Extract visible text from the Projects section
+● Summarize project titles and descriptions
+● Answer conversationally
+
+2. Conversational AI Agent
+● Use open ai  API as the AI engine. 
+● The chatbot should:
+○ Maintain conversational context
+○ Ask clarifying questions when needed
+○ Respond naturally and conversationally
+
+3. Co-Browsing Capabilities (Core Feature)
+The chatbot should act as a co-browsing agent, capable of performing actions on the website
+using tool calls:
+Required Actions:
+● Scroll up/down
+● Navigate to sections/pages
+● Click buttons or links
+● Highlight elements on the page
+● Input data into forms (e.g., contact form)
+● Focus or zoom into specific sections
+It’s fine if you don’t perform all the above mentioned actions.
+These actions should be triggered by user intent, not buttons.
+Example:
+User: “Go to the projects section and highlight the most recent one.
+Reference: sample.mp4
+
+4. Frontend & Architecture
+● Framework: React ## use only rect and javascript and tailwind for css  
+● Clean component structure and readable code
+
+5. Tool Calling & Automation
+● Implement a tool-based action system where the AI:
+○ Decides what action to take
+○ Calls a corresponding function
+
+The AI should not directly manipulate the DOM — it should request tools that do.
+6. Deployment
+● Deploy the application on Vercel
+● The deployed app must:
+○ Be publicly accessible
+○ Work end-to-end (chat + co-browsing)
+
+
+
+8. Working Demo
+● Provide a working video that demonstrates:
+○ Conversational Q&A
+○ Website understanding
+○ Co-browsing actions
+○ Tool-based interactions
+
+● The video should clearly show:
+○ User prompt
+○ AI response
+○ Corresponding on-page action
+
