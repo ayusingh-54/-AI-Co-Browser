@@ -1,7 +1,7 @@
 // Vercel Serverless Function: POST /api/chat
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
-import { getMessages, createMessage } from "./_storage.js";
+import { getMessages, createMessage } from "./_storage";
 
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
