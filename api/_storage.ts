@@ -1,9 +1,35 @@
 // Shared in-memory storage for Vercel serverless functions
-// Note: In serverless, each invocation may get a fresh instance.
-// Conversation history is per-invocation unless an external store is used.
-// For a demo/portfolio this is acceptable.
+// Types inlined to avoid cross-directory imports (Vercel bundles api/ separately)
 
-import type { Project, Skill, Experience, Message } from "../shared/schema";
+export interface Project {
+  id: number;
+  title: string;
+  description: string;
+  techStack: string[];
+  link: string | null;
+  imageUrl: string | null;
+}
+
+export interface Skill {
+  id: number;
+  category: string;
+  items: string[];
+}
+
+export interface Experience {
+  id: number;
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+}
+
+export interface Message {
+  id: number;
+  role: string;
+  content: string;
+  sessionId: string;
+}
 
 const projects: Project[] = [
   {

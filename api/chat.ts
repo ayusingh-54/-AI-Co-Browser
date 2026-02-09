@@ -1,15 +1,24 @@
 // Vercel Serverless Function: POST /api/chat
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
-import { getMessages, createMessage } from "./_storage";
+import { getMessages, createMessage } from "./_storage.js";
 
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({ message: "OPENAI_API_KEY environment variable is not set" });
   }
 
   try {
