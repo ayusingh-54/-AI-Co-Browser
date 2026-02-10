@@ -62,6 +62,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       
       Available sections IDs: #home, #about, #skills, #experience, #projects, #contact.
       
+      IMPORTANT: You MUST ALWAYS include a short, friendly text response along with any tool call. For example, if the user says "show me projects", call navigateTo AND reply with something like "Sure! Taking you to the projects section." Never just call a tool silently — the user should always see a conversational message in the chat. Keep responses brief (1-2 sentences max).
+      
       Be concise and friendly.`;
 
     const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
@@ -156,23 +158,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const toolCall = toolCalls?.[0] as any;
     const content = choice.message.content;
 
+    // Generate a fallback response if the model returned a tool call without text
+    let responseText = content || "";
+    if (toolCall && !content) {
+      const fallbackMessages: Record<string, string> = {
+        scroll: `Scrolling ${JSON.parse(toolCall.function.arguments).direction || 'down'} for you!`,
+        navigateTo: `Sure! Taking you to the ${JSON.parse(toolCall.function.arguments).sectionId?.replace('#', '') || 'that'} section.`,
+        highlightElement: `Let me highlight that for you!`,
+        clickElement: `Clicking that element for you!`,
+        inputText: `Filling in the text for you!`,
+      };
+      responseText = fallbackMessages[toolCall.function.name] || "On it! Performing the action now.";
+    }
+
     // Save assistant response
-    createMessage(
-      "assistant",
-      content || (toolCall ? `[Executing ${toolCall.function.name}]` : ""),
-      sessionId
-    );
+    createMessage("assistant", responseText, sessionId);
 
     if (toolCall) {
       return res.status(200).json({
-        response: content || undefined,
+        response: responseText,
         toolCall: {
           name: toolCall.function.name,
           args: JSON.parse(toolCall.function.arguments),
         },
       });
     } else {
-      return res.status(200).json({ response: content || "" });
+      return res.status(200).json({ response: responseText });
     }
   } catch (err: any) {
     console.error("Chat API error:", err);

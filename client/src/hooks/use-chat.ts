@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { api, type ChatRequest, type ChatResponse } from "@shared/routes";
 import { useRef } from "react";
-import { useToast } from "@/hooks/use-toast";
 
 // Helper to extract visible text from the page for context
 function extractVisibleText(): string {
@@ -76,7 +75,6 @@ async function executeTool(toolName: string, args: Record<string, any>) {
 
 export function useChat() {
   const sessionId = useRef(`session-${Math.random().toString(36).substring(7)}`).current;
-  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (message: string) => {
@@ -101,19 +99,18 @@ export function useChat() {
       // If there's a tool call, execute it immediately
       if (data.toolCall) {
         await executeTool(data.toolCall.name, data.toolCall.args);
-        
-        // Show a toast for the action
-        const actionMap: Record<string, string> = {
-          scroll: "Scrolling page...",
-          navigateTo: `Navigating to ${data.toolCall.args.sectionId}...`,
-          highlightElement: "Highlighting content...",
-        };
-        
-        toast({
-          title: "AI Assistant",
-          description: actionMap[data.toolCall.name] || "Performing action...",
-          duration: 2000,
-        });
+
+        // If the server didn't provide a text response, generate a fallback
+        if (!data.response) {
+          const fallbackMessages: Record<string, string> = {
+            scroll: `Scrolling ${data.toolCall.args.direction || 'down'} for you!`,
+            navigateTo: `Sure! Taking you to the ${(data.toolCall.args.sectionId || '').replace('#', '')} section.`,
+            highlightElement: `Let me highlight that for you!`,
+            clickElement: `Clicking that element for you!`,
+            inputText: `Filling in the text for you!`,
+          };
+          data.response = fallbackMessages[data.toolCall.name] || "Done! Action performed.";
+        }
       }
 
       return data;

@@ -38,7 +38,7 @@ export async function registerRoutes(
       
       Here is the current visible content on the page (DOM text):
       ---
-      ${context.slice(0, 5000)} // Truncate to avoid token limits if necessary
+      ${context.slice(0, 5000)}
       ---
 
       Your goal is to help the user navigate the portfolio, answer questions about the projects/skills/experience shown, and perform actions like scrolling or highlighting.
@@ -47,6 +47,8 @@ export async function registerRoutes(
       If the user asks about a specific project, use 'highlightElement' to point it out if it's visible, or 'navigateTo' to the projects section first.
       
       Available sections IDs: #home, #about, #skills, #experience, #projects, #contact.
+      
+      IMPORTANT: You MUST ALWAYS include a short, friendly text response along with any tool call. For example, if the user says "show me projects", call navigateTo AND reply with something like "Sure! Taking you to the projects section." Never just call a tool silently — the user should always see a conversational message in the chat. Keep responses brief (1-2 sentences max).
       
       Be concise and friendly.`;
 
@@ -138,19 +140,32 @@ export async function registerRoutes(
       const toolCall = choice.message.tool_calls?.[0];
       const content = choice.message.content;
 
+      // Generate a fallback response if the model returned a tool call without text
+      let responseText = content || "";
+      if (toolCall && !content) {
+        const fallbackMessages: Record<string, string> = {
+          scroll: `Scrolling ${JSON.parse(toolCall.function.arguments).direction || 'down'} for you!`,
+          navigateTo: `Sure! Taking you to the ${JSON.parse(toolCall.function.arguments).sectionId?.replace('#', '') || 'that'} section.`,
+          highlightElement: `Let me highlight that for you!`,
+          clickElement: `Clicking that element for you!`,
+          inputText: `Filling in the text for you!`,
+        };
+        responseText = fallbackMessages[toolCall.function.name] || "On it! Performing the action now.";
+      }
+
       // Save assistant response
-      await storage.createMessage('assistant', content || (toolCall ? `[Executing ${toolCall.function.name}]` : ""), sessionId);
+      await storage.createMessage('assistant', responseText, sessionId);
 
       if (toolCall) {
         res.json({
-          response: content || undefined,
+          response: responseText,
           toolCall: {
             name: toolCall.function.name,
             args: JSON.parse(toolCall.function.arguments),
           },
         });
       } else {
-        res.json({ response: content || "" });
+        res.json({ response: responseText });
       }
 
     } catch (err) {
